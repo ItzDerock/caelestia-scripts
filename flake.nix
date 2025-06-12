@@ -1,3 +1,4 @@
+# flake.nix
 {
   description = "A Nix flake for caelestia";
 
@@ -39,54 +40,51 @@
           jetbrains-mono
           fd
 
+          # for video capture
+          wl-screenrec
+          glib.bin # provides bin/gdbus
+
           # hyprland is assumed to be installed by the user
         ];
       in
       {
         packages.caelestia = pkgs.stdenv.mkDerivation {
           pname = "caelestia";
-          version = "0.1.1"; 
-
-          # Use the current directory as the source for the build
+          version = "0.1.1";
           src = ./.;
-
           nativeBuildInputs = [ pkgs.makeWrapper ];
           buildInputs = caelestiaPkgs;
 
           installPhase = ''
             runHook preInstall
 
-            # Create directories in the output path
             install -d $out/bin
             install -d $out/libexec/caelestia
-
-            # Copy all source files and directories to libexec, excluding the flake files.
+            
+            # Copy source files
             shopt -s dotglob
             for item in *; do
               case "$item" in
-                flake.nix|flake.lock)
-                  # Skip flake files
-                  ;;
-                *)
-                  # Copy everything else
-                  cp -a --no-preserve=ownership "$item" "$out/libexec/caelestia/"
-                  ;;
+                flake.nix|flake.lock) ;;
+                *) cp -a --no-preserve=ownership "$item" "$out/libexec/caelestia/" ;;
               esac
             done
-
-            # Create a wrapper script in the bin directory that executes main.fish
-            makeWrapper ${pkgs.fish}/bin/fish $out/bin/caelestia \
-              --add-flags "$out/libexec/caelestia/main.fish"
-
-            # Install the fish completions
+            
+            # Install completions
             install -d $out/share/fish/completions
             install -Dm644 $out/libexec/caelestia/completions/caelestia.fish $out/share/fish/completions/caelestia.fish
+
+            # Create a wrapper that provides the PATH for all dependencies
+            makeWrapper ${pkgs.fish}/bin/fish $out/bin/caelestia \
+              --prefix PATH : ${pkgs.lib.makeBinPath caelestiaPkgs} \
+              --set-default CAELESTIA_DATA_DIR "$out/libexec/caelestia/data" \
+              --set-default CAELESTIA_CACHE_DIR "$HOME/.cache/caelestia" \
+              --add-flags "$out/libexec/caelestia/main.fish"
 
             runHook postInstall
           '';
         };
 
-        # Set a default package for `nix build` and `nix run`
         defaultPackage = self.packages.${system}.caelestia;
       });
 }
