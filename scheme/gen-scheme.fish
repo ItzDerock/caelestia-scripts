@@ -20,14 +20,14 @@ if ! test -d $C_CACHE/schemes/$hash/$variant
 end
 
 # Copy scheme from cache
-rm -rf $src/../data/schemes/dynamic
-cp -r $C_CACHE/schemes/$hash/$variant $src/../data/schemes/dynamic
+rm -rf $C_DATA/schemes/dynamic
+cp -r $C_CACHE/schemes/$hash/$variant $C_DATA/schemes/dynamic
 
 # Update if current
 set -l variant (string match -gr 'dynamic-(.*)' (cat $C_STATE/scheme/current-name.txt 2> /dev/null))
 if test -n "$variant"
     # If variant doesn't exist, use default
-    test -d $src/../data/schemes/dynamic/$variant || set -l variant default
+    test -d $C_DATA/schemes/dynamic/$variant || set -l variant default
     # Apply scheme
     $src/main.fish dynamic $variant $MODE > /dev/null
 end

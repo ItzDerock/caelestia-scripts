@@ -82,7 +82,7 @@ complete -c caelestia -n "$seen workspace-action && not $seen $commands" -a "$co
 
 # Scheme
 set -q XDG_DATA_HOME && set -l data_dir $XDG_DATA_HOME || set -l data_dir $HOME/.local/share
-set -l scheme_dir $data_dir/caelestia/scripts/data/schemes
+set -l scheme_dir $C_DATA/schemes
 set -l schemes (basename -a (find $scheme_dir/ -mindepth 1 -maxdepth 1 -type d))
 set -l commands 'print' $schemes
 complete -c caelestia -n "$seen scheme && not $seen $commands" -a 'print' -d 'Generate and print a colour scheme for an image'

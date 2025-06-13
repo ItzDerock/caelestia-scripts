@@ -24,7 +24,7 @@ end
 
 function get-config -a key
     test -f $C_CONFIG_FILE && set -l value (jq -r ".$key" $C_CONFIG_FILE)
-    test -n "$value" -a "$value" != null && echo $value || jq -r ".$key" (dirname (status filename))/data/config.json
+    test -n "$value" -a "$value" != null && echo $value || jq -r ".$key" $C_DATA/config.json
 end
 
 function set-config -a key value

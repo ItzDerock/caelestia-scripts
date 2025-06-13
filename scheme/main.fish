@@ -21,10 +21,10 @@ function set-scheme -a path name mode
 end
 
 set -l src (dirname (status filename))/..
-set -l schemes $src/data/schemes
 
 . $src/util.fish
 
+set -l schemes $C_DATA/schemes
 set -l scheme $argv[1]
 set -l flavour $argv[2]
 set -l mode $argv[3]

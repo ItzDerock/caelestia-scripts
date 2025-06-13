@@ -4,6 +4,10 @@ set -l src (dirname (realpath (status filename)))
 
 . $src/util.fish
 
+# Copy defaults to $C_DATA
+mkdir -p $C_DATA
+cp -n -r data/* $C_DATA
+
 if test "$argv[1]" = shell
     # Start shell if no args
     if test -z "$argv[2..]"
