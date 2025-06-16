@@ -44,6 +44,10 @@
           wl-screenrec
           glib.bin # provides bin/gdbus
 
+          # for screenshots
+          wayfreeze
+          slurp
+
           # hyprland is assumed to be installed by the user
         ];
       in
